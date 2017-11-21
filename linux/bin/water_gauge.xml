@@ -53,14 +53,14 @@
   </gradient_end_color_nite>
   <needle_length>0.8309999</needle_length>
   <needle_tip_width>0.0099999</needle_tip_width>
-  <needle_tail_width>0.0399999</needle_tail_width>
-  <needle_width>0.0379999</needle_width>
+  <needle_tail_width>0.0399998</needle_tail_width>
+  <needle_width>0.0379998</needle_width>
   <needle_tail>0.1949999</needle_tail>
   <show_tattletale>0</show_tattletale>
   <tattletale_alpha>0.5</tattletale_alpha>
   <precision>0</precision>
-  <width>478</width>
-  <height>478</height>
+  <width>287</width>
+  <height>287</height>
   <main_start_angle>135</main_start_angle>
   <main_sweep_angle>270</main_sweep_angle>
   <rotation>1</rotation>
@@ -70,13 +70,12 @@
   <value_font_scale>0.2000000</value_font_scale>
   <value_str_xpos>0</value_str_xpos>
   <value_str_ypos>0.3499999</value_str_ypos>
-  <value_justification>221</value_justification>
   <antialias>1</antialias>
   <show_value>1</show_value>
   <color_range>
     <layer>0</layer>
-    <lowpoint>90,000000</lowpoint>
-    <highpoint>100,000000</highpoint>
+    <lowpoint>100,000000</lowpoint>
+    <highpoint>110,000000</highpoint>
     <lwidth>0,080000</lwidth>
     <inset>0,800000</inset>
     <color_day>
@@ -92,7 +91,7 @@
   </color_range>
   <color_range>
     <layer>0</layer>
-    <lowpoint>100,000000</lowpoint>
+    <lowpoint>110,000000</lowpoint>
     <highpoint>120,000000</highpoint>
     <lwidth>0,080000</lwidth>
     <inset>0,800000</inset>

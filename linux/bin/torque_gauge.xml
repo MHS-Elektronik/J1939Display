@@ -53,26 +53,59 @@
   </gradient_end_color_nite>
   <needle_length>0.8309999</needle_length>
   <needle_tip_width>0.0099999</needle_tip_width>
-  <needle_tail_width>0.0399999</needle_tail_width>
-  <needle_width>0.0379999</needle_width>
+  <needle_tail_width>0.0399998</needle_tail_width>
+  <needle_width>0.0379998</needle_width>
   <needle_tail>0.1949999</needle_tail>
   <show_tattletale>0</show_tattletale>
   <tattletale_alpha>0.5</tattletale_alpha>
   <precision>0</precision>
-  <width>478</width>
-  <height>478</height>
+  <width>237</width>
+  <height>237</height>
   <main_start_angle>155.10000</main_start_angle>
   <main_sweep_angle>230</main_sweep_angle>
   <rotation>1</rotation>
   <lbound>0</lbound>
-  <ubound>125</ubound>
+  <ubound>100</ubound>
   <value_font>arial Bold</value_font>
-  <value_font_scale>0.2199999</value_font_scale>
+  <value_font_scale>0.2199998</value_font_scale>
   <value_str_xpos>0</value_str_xpos>
   <value_str_ypos>0.3009999</value_str_ypos>
-  <value_justification>221</value_justification>
   <antialias>1</antialias>
   <show_value>1</show_value>
+  <color_range>
+    <layer>0</layer>
+    <lowpoint>90,000000</lowpoint>
+    <highpoint>95,000000</highpoint>
+    <lwidth>0,080000</lwidth>
+    <inset>0,800000</inset>
+    <color_day>
+      <red>62708</red>
+      <green>56540</green>
+      <blue>2313</blue>
+    </color_day>
+    <color_nite>
+      <red>62708</red>
+      <green>56540</green>
+      <blue>2313</blue>
+    </color_nite>
+  </color_range>
+  <color_range>
+    <layer>0</layer>
+    <lowpoint>95,000000</lowpoint>
+    <highpoint>100,000000</highpoint>
+    <lwidth>0,080000</lwidth>
+    <inset>0,800000</inset>
+    <color_day>
+      <red>61166</red>
+      <green>12079</green>
+      <blue>3341</blue>
+    </color_day>
+    <color_nite>
+      <red>61166</red>
+      <green>12079</green>
+      <blue>3341</blue>
+    </color_nite>
+  </color_range>
   <text_block>
     <layer>0</layer>
     <font>arial Bold</font>
@@ -113,7 +146,7 @@
     <layer>0</layer>
     <font>Arial Bold Italic</font>
     <font_scale>0,160000</font_scale>
-    <text>0,25,50,100,125</text>
+    <text>0,25,50,75,100</text>
     <text_inset>0,280000</text_inset>
     <text_color_day>
       <red>55769</red>
