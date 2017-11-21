@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=J1939Display
+Exec=/opt/J1939Display/linux/bin/J1939Display

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dashboard>
+  <Rpm>  600</Rpm>
+  <EngineTorque> 118</EngineTorque>
+  <FuelConsumptionInL>   0</FuelConsumptionInL>
+  <WaterTemp> 77.0</WaterTemp>
+  <OilTemp> 45.0</OilTemp>
+  <OilLevel>  0.0</OilLevel>
+  <OilPressure> 0.00</OilPressure>
+  <FuelTemp>-40.0</FuelTemp>
+  <AirTemp>-40.0</AirTemp>
+  <TurbochargerPressure> 0.00</TurbochargerPressure>
+</dashboard>

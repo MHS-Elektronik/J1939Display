@@ -1,0 +1,41 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	 <HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+	<title>J1939 Display</title>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<script type="text/javascript" src="gauge.js"></script>
+	<script type="text/javascript" src="gauges.js"></script>
+	<script type='text/javascript' src='control.js'></script>
+	<script>
+		function init() {
+			loadPage("status");
+			loadPage("dashboard");			
+      loadPage("graph1");
+      loadPage("graph2");
+			loadPage("about");
+      showTab("status");
+			}
+	</script>
+	
+	
+</head>
+<body onload="init()">
+	<h1>J1939 Display 1.00</h1>
+	<div class="tabHeader" id="tabHeader">
+		<a href="javascript:showTab('status')" id="statuslink">Status</a>
+		<a href="javascript:showTab('dashboard')" id="dashboardlink">Dashboard</a>
+    <a href="javascript:showTab('graph1')" id="graph1link">Graph - 1 Stunde</a>
+    <a href="javascript:showTab('graph2')" id="graph2link">Graph - 1 Tag</a>
+		<a href="javascript:showTab('about')" id="aboutlink">Info</a>
+	</div>
+
+	<div class="tabs" id="tabs">
+		<div class="tab" id="status"></div>
+		<div class="tab" id="dashboard"></div>
+    <div class="tab" id="graph1"></div>
+    <div class="tab" id="graph2"></div>    
+		<div class="tab" id="about"></div>    
+	</div>
+</body>
+</html>
