@@ -14,8 +14,86 @@
  *   http://opensource.org/licenses/MIT>                                   *
  *                                                                         *
  ***************************************************************************/
+#include <string.h>
+#include <ctype.h>
 #include <gtk/gtk.h>
 #include "util.h"
+
+
+#define SET_RESULT(result, value) if ((result)) *(result) = (value)
+
+char *get_item_as_string(char **str, char *trenner, int *result)
+{
+int hit, cnt, l;
+char *s, *t, *start, *end, *item;
+
+if ((!str) || (!trenner))
+  {
+  SET_RESULT(result, -1);
+  return(NULL);
+  }
+s = *str;
+if (!s)
+  {
+  SET_RESULT(result, -1);
+  return(NULL);
+  }
+// Führende Leerzeichen überspringen
+if (*s == '\0')
+  {
+  SET_RESULT(result, -1);
+  return(NULL);
+  }
+SET_RESULT(result, 0);
+end = s;
+item = s;
+start = s;
+
+hit = 0;
+for (s = end; *s; s++)
+  {
+  cnt = 0;
+  for (t = trenner; *t; t++)
+    {
+    cnt++;
+    if (*s == *t)
+      {
+      *s++ = '\0';
+      end = s;
+      SET_RESULT(result, cnt);
+      hit = 1;
+      break;
+      }
+    }
+  if (hit)
+    break;
+  }
+// Abschliesende Leerzeichen löschen
+if ((l = strlen(item)))
+  {
+  s = item + (l-1);
+  while ((l) && ((isspace((int)*s)) || (*s == '\n') || (*s == '\r')))
+  {
+    l--;
+    s--;
+  }
+  if (l)
+    s++;
+  *s = 0;
+  }
+if (end == start)
+  *str = start + strlen(end);
+else
+  *str = end;
+return(item);
+}
+
+
+void UpdateGtk(void)
+{
+while (gtk_events_pending())
+  gtk_main_iteration();
+}
 
 
 GtkWidget *create_menue_button(const gchar *stock, const gchar *text, const gchar *secondary)
@@ -52,3 +130,4 @@ gtk_widget_show_all (align);
 
 return(button);
 }
+

@@ -48,7 +48,10 @@
 #define mhs_sleep(x) usleep((x) * 1000)
 #endif
 
+char *get_item_as_string(char **str, char *trenner, int *result);
 GtkWidget *create_menue_button(const gchar *stock, const gchar *text, const gchar *secondary);
+void UpdateGtk(void);
+
 
 #ifdef __cplusplus
   }

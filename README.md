@@ -1,4 +1,4 @@
-# CANcool
+# J1939 Display
 Open Source J1939 Data Viewer for the Raspberry Pi
 
 The J1939Display is programmed in C and use the gtk+ library.

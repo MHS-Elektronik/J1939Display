@@ -25,8 +25,13 @@
 #include "gauge_win.h"
 #include "lcd_gauge_win.h"
 #include "trace.h"
+#include "xml_database.h"
+#include "sqlite_database.h"
+#include "modbus_io.h"
+#include "rrd_tool_database.h"
+#include "start_win.h"
+#include "setup.h"
 #include "main.h"
-
 
 
 struct TMainWin
@@ -34,15 +39,20 @@ struct TMainWin
   GtkWidget *Main;
   GtkWidget *EventBox;
   GtkWidget *Notebook;
+  GtkWidget *StartWin;
   };
 
-#define MENU_PAGE_INDEX 4
+#define MENU_PAGE_INDEX 5
 
 static struct TMainWin MainWin;
 static struct TJ1939Data J1939Data;
 guint EventTimerId;
 gchar *BaseDir;
+guint64 TimeNow;
+static guint64 AppStatusTimeStamp;
+static gint AppStatus = APP_INIT;
 
+struct TCanCore CanCore;
 
 static void MenuCB(GtkButton *button, gpointer user_data);
 
@@ -79,12 +89,22 @@ gtk_widget_set_style(GTK_WIDGET(window), GTK_STYLE(style));
 }
 
 
-static void FullScreenCB(GtkToggleButton *togglebutton, gpointer user_data)
+static void SetupFullscreen(void)
 {
-if (gtk_toggle_button_get_active(togglebutton))
+if (Setup.ShowFullscreen)
   gtk_window_fullscreen(GTK_WINDOW(MainWin.Main));
 else
   gtk_window_unfullscreen(GTK_WINDOW(MainWin.Main));
+}
+
+
+static void FullScreenCB(GtkToggleButton *togglebutton, gpointer user_data)
+{
+if (gtk_toggle_button_get_active(togglebutton))
+  Setup.ShowFullscreen = 1;
+else
+  Setup.ShowFullscreen = 0;
+SetupFullscreen();
 }
 
 
@@ -99,19 +119,19 @@ box = gtk_vbox_new(FALSE, 10);
 gtk_container_set_border_width(GTK_CONTAINER(box), 5);
 
 widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht</span>", "J1939 Standert Werte anzeigen");
-g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)0);
-gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
-
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht</span>", "J1939 Digital Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)1);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 2</span>", "J1939 Analog Standert Werte anzeigen");
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht</span>", "J1939 Digital Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)2);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">CAN-Trace</span>", "Anzeige der CAN Rohdaten");
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 2</span>", "J1939 Analog Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)3);
+gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
+
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">CAN-Trace</span>", "Anzeige der CAN Rohdaten");
+g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)4);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
 btn_bar = gtk_hbox_new(FALSE, 10);
@@ -137,21 +157,65 @@ gint page;
 (void)data;
 
 page = gtk_notebook_get_current_page(GTK_NOTEBOOK(MainWin.Notebook));
-J1939CanReadMessages(&J1939Data);
-switch (page)
+TimeNow = g_get_monotonic_time();
+// *** Fehler wieder zur Startseite zurückspringen
+if ((page) && (CanCore.AppCanStatus < APP_CAN_RUN))
   {
-  case 0 : {
-           UpdateJ1939LcdGaugeWin(&J1939Data);
-           break;
-           }
-  case 1 : {
-           UpdateJ1939LcdWin(&J1939Data);
-           break;
-           }
-  case 2 : {
-           UpdateJ1939GaugeWin(&J1939Data);
-           break;
-           }
+  AppStatus = APP_INIT;
+  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), 0);
+  }
+if (!page)
+  {
+  switch (AppStatus)
+    {
+    case APP_INIT  : {
+                     StartWinRun(MainWin.StartWin);
+                     AppStatusTimeStamp = 0;
+                     AppStatus = APP_START;
+                     break;
+                     }
+    case APP_START : break;
+    case APP_START_FINISH :
+                     {
+                     if (!AppStatusTimeStamp)
+                       AppStatusTimeStamp = TimeNow;
+                     else
+                       {
+                       if ((TimeNow - AppStatusTimeStamp) >= (3000 * 1000))
+                         {
+                         StartWinStop(MainWin.StartWin);
+                         gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), 1);
+                         AppStatus = APP_RUN;
+                         break;
+                         }
+                       }
+                     }
+    }
+  }
+else
+  {
+  J1939CanReadMessages(&CanCore, &J1939Data);
+  if (CanCore.AppCanStatus < APP_CAN_RUN)
+    return(TRUE);
+  UpdateXMLDatabase(&J1939Data);
+  UpdateSqliteDatabase(&J1939Data);
+  UpdateModbusIo(&J1939Data);
+  UpdateRRDtoolDatabase(&J1939Data);
+  switch (page)
+    {
+    case 1 : {
+             UpdateJ1939LcdGaugeWin(&J1939Data);
+             break;
+             }
+    case 2 : {
+             UpdateJ1939LcdWin(&J1939Data);
+             break;
+             }
+    case 3 : {
+             UpdateJ1939GaugeWin(&J1939Data);
+             break;
+             }
+    }
   }
 return(TRUE);
 }
@@ -161,41 +225,51 @@ static void MenuCB(GtkButton *button, gpointer user_data)
 {
 guint index;
 
-index = (guint)user_data;
+index = (uintptr_t)user_data;
 if (index == 1000)
   gtk_main_quit();
 gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), index);
 }
 
 
-/*static void ShowMenuClickedCB(GtkButton *button, gpointer user_data) <*>
+static void ShowMenuClickedCB(GtkButton *button, gpointer user_data)
 {
-gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
-}*/
+if (AppStatus >= APP_RUN)
+  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
+}
 
 
 static gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
-gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
+if (AppStatus >= APP_RUN)
+  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
 return(FALSE);
 }
 
 
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
-gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
+if (AppStatus >= APP_RUN)
+  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
 return(FALSE);
+}
+
+
+void SetAppStatus(gint app_status)
+{
+AppStatus = app_status;
 }
 
 
 int main(int argc, char *argv[])
 {
-GtkWidget *win, *vbox, *widget, *notebook; // *hbox, *tmp_image; <*>
-gchar *filename;
+GtkWidget *win, *vbox, *widget, *notebook, *hbox, *tmp_image;
 
 /* Initialize GTK+ */
 gtk_init (&argc, &argv);
+
 PathsInit(argv[0]);
+(void)LoadConfigFile();
 /* Create the main window */
 win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
@@ -216,35 +290,40 @@ g_signal_connect(win, "key_press_event", G_CALLBACK(on_key_press), NULL);
 g_signal_connect(win, "button_press_event", G_CALLBACK(button_press_event), NULL);
 gtk_widget_realize(win);
 
-if (J1939CanInit() >= 0)
+if (J1939CanInit(&CanCore) >= 0)
    EventTimerId = g_timeout_add(300, (GtkFunction)EventTimerProc, NULL);
 
 vbox = gtk_vbox_new(FALSE, 6);
 gtk_container_add(GTK_CONTAINER (win), vbox);
 
 notebook = gtk_notebook_new();
-
 MainWin.Notebook = notebook;
 gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
-// 1. Seite -> J1939 View 1
-widget = CreateJ1939LcdGaugeWin();
+
+// 1. Seite -> Start
+widget = CreateStartWin(&CanCore);
+MainWin.StartWin = widget;
 gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-// 1. Seite -> J1939 View 2
+// 2. Seite -> J1939 View 1
+widget = CreateJ1939LcdGaugeWin();
+//gtk_widget_set_sensitive(widget, FALSE);
+gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
+// 3. Seite -> J1939 View 2
 widget = CreateJ1939LcdWin();
 gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-// 2. Seite -> J1939 View 3
+// 4. Seite -> J1939 View 3
 widget = CreateJ1939GaugeWin();
 gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-// 3. Seite -> Trace
+// 5. Seite -> Trace
 widget = CreateTraceWin();
 gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-// 4. Seite -> Menü
+// 6. Seite -> Menü
 widget = MainMenu();
 gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
 
 gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
-/*hbox = gtk_hbox_new(FALSE, 5); <*>
+hbox = gtk_hbox_new(FALSE, 5);
 
 widget = gtk_label_new("J1939Main");
 gtk_box_pack_start(GTK_BOX(hbox), widget, TRUE, TRUE, 0);
@@ -256,11 +335,17 @@ gtk_container_add(GTK_CONTAINER(widget), tmp_image);
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(ShowMenuClickedCB), NULL);
 gtk_box_pack_end(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 
-gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); */
+gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-/* Enter the main loop */
-//gtk_widget_show_all(win);  // <*>
 gtk_widget_show_all(MainWin.Main);
+
+(void)XMLDatabaseCreate();
+(void)SqliteDBCreate();
+(void)ModbusIoCreate();
+(void)RRDtoolCreate();
+
+SetupFullscreen();
+
 gtk_main();
 
 if (EventTimerId)
@@ -268,7 +353,11 @@ if (EventTimerId)
 DestroyJ1939LcdWin();
 DestroyJ1939GaugeWin();
 DestroyTraceWin(); // Muss vor J1939CanDown stehen
-J1939CanDown();
+XMLDatabaseDestroy();
+ModbusIoDestroy();
+SqliteDBDestroy();
+J1939CanDown(&CanCore);
+ConfigDestroy();
 safe_free(BaseDir);
 return 0;
 }

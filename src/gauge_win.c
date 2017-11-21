@@ -54,32 +54,27 @@ gtk_table_set_col_spacings(GTK_TABLE(table), 5);
 gtk_table_set_row_spacings(GTK_TABLE(table), 5);
 // Zeile 1, Spalte 1/2
 J1939GaugeWin.TorqueGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.TorqueGauge);
+//gtk_widget_realize(J1939GaugeWin.TorqueGauge); // <*> ?
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.TorqueGauge), "torque_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.TorqueGauge, 0, 2, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 // Zeile 1, Spalte 3/4
 J1939GaugeWin.RpmGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.RpmGauge);
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.RpmGauge), "rpm_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.RpmGauge, 2, 4, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 // Zeile 2, Spalte 1
 J1939GaugeWin.WaterGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.WaterGauge);
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.WaterGauge), "water_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.WaterGauge, 0, 1, 1, 2, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 // Zeile 2, Spalte 2
 J1939GaugeWin.OelGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.OelGauge);
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.OelGauge), "oel_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.OelGauge, 1, 2, 1, 2, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 // Zeile 2, Spalte 3
 J1939GaugeWin.OelMapGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.OelMapGauge);
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.OelMapGauge), "oel_map_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.OelMapGauge, 2, 3, 1, 2, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 // Zeile 2, Spalte 4
 J1939GaugeWin.OelLevelGauge = mtx_gauge_face_new();
-//gtk_widget_realize(J1939GaugeWin.OelLevelGauge);
 mtx_gauge_face_import_xml(MTX_GAUGE_FACE(J1939GaugeWin.OelLevelGauge), "oel_level_gauge.xml");
 gtk_table_attach(GTK_TABLE(table), J1939GaugeWin.OelLevelGauge, 3, 4, 1, 2, GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 
