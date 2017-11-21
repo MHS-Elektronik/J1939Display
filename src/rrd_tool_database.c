@@ -30,11 +30,11 @@ static const guint RRDtoolGraph2UpdateTime = 3600000; // 60 Min. = 60000 * 60 = 
 
 static const gchar RRDtoolDatabaseFilename[] = {"engine.rrd"};
 static const gchar RRDtoolGraph1Filename[] = {"engine_graph1.png"};
-static const gchar RRDtoolGraph1Filename[] = {"engine_graph2.png"};
+static const gchar RRDtoolGraph2Filename[] = {"engine_graph2.png"};
 
 static const gchar RRDtoolExec[] = {"rrdtool"};
 
-static const gchar RRDtoolCreateCmd[] = {" create %s --step 15 "};  # Sekunden (Update Intervall), 0,25 Min
+static const gchar RRDtoolCreateCmd[] = {" create %s --step 15 "};  // # Sekunden (Update Intervall), 0,25 Min
 
 static const gchar RRDtoolUpdateCmd[] = {" update %s "};
 
