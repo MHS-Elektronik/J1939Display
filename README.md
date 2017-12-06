@@ -3,7 +3,7 @@ Hard- und Software zur Überwachung von Blockheizkraftwerken.
 
 The text in english coming soon.
 
-[![J1939Display](https://github.com/MHS-Elektronik/J1939Display/doku/J1939Display.jpg)](https://github.com/MHS-Elektronik/J1939Display/doku/J1939Display.jpg)
+[![J1939Display](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/J1939Display.jpg)](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/J1939Display.jpg)
 
 ## Key Features:  
 * Hardware: Raspberry PI oder ein beliebiger Linux PC, Tiny-CAN Interface
@@ -29,7 +29,7 @@ Folgende Hardware Komponenten werden benötigt:
   * Tiny-CAN I-XL (Passendes USB-Kabel ist dabei) Art.-Nr. 700012, Bezugsquelle: http://www.mhs-elektronik.de
 * AC/DC-Netzteil USB 5V/2A, Art.-Nr. 2456304, Bezugsquelle: http://www.farnell.de
 
-[![Versuchsaufbau](https://github.com/MHS-Elektronik/J1939Display/doku/aufbau.jpg)](https://github.com/MHS-Elektronik/J1939Display/doku/aufbau.jpg)
+[![Versuchsaufbau](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/aufbau.jpg)](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/aufbau.jpg)
 
 # Installation
 Zuerst muss das Tiny-CAN Softwarepaket installiert werden, für den Betrieb der Software wird nur die "libmhstcan.so" benötigt. "J1939Display" sucht diese Datei im Verzeichnis "/opt/tiny_can/can_api". 
@@ -124,7 +124,7 @@ Bei J1939 handelt es sich um ein Multimaster-System mit dezentralisiertem Netzwe
 
 Die PGN ist eine in der SAE J1939-Norm definierte Nummer, die mehrere Signale zu einer PDU (Protokoll Data Unit) zusammenfügt. Die PGN ist Teil des CAN-Identifiers.
 
-[![J1939 Protokoll](https://github.com/MHS-Elektronik/J1939Display/doku/j1939_1.png)](https://github.com/MHS-Elektronik/J1939Display/doku/j1939_1.png)
+[![J1939 Protokoll](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/j1939_1.png)](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/j1939_1.png)
 
 Beispiel: PGN 65262 (0xFEEE) – ET1 Engine Temperatur 1
 Interpretation der 8 Byte CAN Daten, PDU:
@@ -199,7 +199,7 @@ Java und HTML5 erwecken das Webfrontend zum Leben, die Funktion "init" aus "inde
 2. "Tab-Header" markieren
 3. Setzt abhängig von der selektierten Seite einen Intervall-Timer, der alle 500ms die Funktion "loadData" aufruft.
 
-[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/doku/webpage.jpg)]((https://github.com/MHS-Elektronik/J1939Display/doku/webpage.jpg)
+[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)]((https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)
 
 ## XML-Datenbank
 Alle 5 Sekunden schreibt das Programm die Dateien "status.xml" und "dashboard.xml", welche den aktuellen Ist-Zustand aller Messwerte widerspiegelen. Ein "Java Script" der Webpage liest diese Dateien alle 10 Sekunden ein und visualisiert die Messwerte in HTML und mit HTML5 Widgets.
