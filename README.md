@@ -3,7 +3,7 @@ Hard- und Software zur Überwachung von Blockheizkraftwerken.
 
 The text in english coming soon.
 
-[![J1939Display](https://github.com/MHS-Elektronik/J1939Display/doku/J1939Display.jpg)]()
+[![J1939Display](https://github.com/MHS-Elektronik/J1939Display/doku/J1939Display.jpg)](https://github.com/MHS-Elektronik/J1939Display/doku/J1939Display.jpg)
 
 ## Key Features:  
 * Hardware: Raspberry PI oder ein beliebiger Linux PC, Tiny-CAN Interface
@@ -29,7 +29,7 @@ Folgende Hardware Komponenten werden benötigt:
   * Tiny-CAN I-XL (Passendes USB-Kabel ist dabei) Art.-Nr. 700012, Bezugsquelle: http://www.mhs-elektronik.de
 * AC/DC-Netzteil USB 5V/2A, Art.-Nr. 2456304, Bezugsquelle: http://www.farnell.de
 
-[![Versuchsaufbau](https://github.com/MHS-Elektronik/J1939Display/doku/aufbau.jpg)]()
+[![Versuchsaufbau](https://github.com/MHS-Elektronik/J1939Display/doku/aufbau.jpg)](https://github.com/MHS-Elektronik/J1939Display/doku/aufbau.jpg)
 
 # Installation
 Zuerst muss das Tiny-CAN Softwarepaket installiert werden, für den Betrieb der Software wird nur die "libmhstcan.so" benötigt. "J1939Display" sucht diese Datei im Verzeichnis "/opt/tiny_can/can_api". 
@@ -123,7 +123,8 @@ Das Protokoll wurde von SAE (Society of Automotive Engineers) definiert und arbe
 Bei J1939 handelt es sich um ein Multimaster-System mit dezentralisiertem Netzwerk-Management ohne kanalbasierte Kommunikation. Der überwiegende Teil der Kommunikation erfolgt meist zyklisch und kann von allen Steuergeräten ohne explizite Anforderung von Daten empfangen werden (Broadcast). Unsere Software macht sich das zunutze und horcht die bnötigeten Daten rein passiv am Bus ab.
 
 Die PGN ist eine in der SAE J1939-Norm definierte Nummer, die mehrere Signale zu einer PDU (Protokoll Data Unit) zusammenfügt. Die PGN ist Teil des CAN-Identifiers.
-[![J1939 Protokoll](https://github.com/MHS-Elektronik/J1939Display/doku/j1939_1.png)]()
+
+[![J1939 Protokoll](https://github.com/MHS-Elektronik/J1939Display/doku/j1939_1.png)](https://github.com/MHS-Elektronik/J1939Display/doku/j1939_1.png)
 
 Beispiel: PGN 65262 (0xFEEE) – ET1 Engine Temperatur 1
 Interpretation der 8 Byte CAN Daten, PDU:
@@ -198,7 +199,7 @@ Java und HTML5 erwecken das Webfrontend zum Leben, die Funktion "init" aus "inde
 2. "Tab-Header" markieren
 3. Setzt abhängig von der selektierten Seite einen Intervall-Timer, der alle 500ms die Funktion "loadData" aufruft.
 
-[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/doku/webpage.jpg)]()
+[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/doku/webpage.jpg)]((https://github.com/MHS-Elektronik/J1939Display/doku/webpage.jpg)
 
 ## XML-Datenbank
 Alle 5 Sekunden schreibt das Programm die Dateien "status.xml" und "dashboard.xml", welche den aktuellen Ist-Zustand aller Messwerte widerspiegelen. Ein "Java Script" der Webpage liest diese Dateien alle 10 Sekunden ein und visualisiert die Messwerte in HTML und mit HTML5 Widgets.
@@ -217,7 +218,7 @@ Ein sehr einfaches Protokoll zum Austausch von Daten. Die aktuellen Messwerte we
 # Simulation
 Um die J1939 CAN Nachrichten auf dem Bus zu generieren verwenden wir ein "CAN-LCD 2" Display. Das Projekt und der Verdrahtungsplan sind im Verzeichnis "…/J1939Display/tools" zu finden. Zu beachten ist das "CAN-LCD 2" Display noch einen aktiven Empfänger benötigt, da der CAN Controller unseres J1939Displays ja im "Listen only Mode" betrieben wird und empfangene CAN Nachrichten nicht mit einen Acknowledge bestätigt werden. Bitte auch die Terminierung nicht vergessen.
 
-[![J1939 Restbussimulation](https://github.com/MHS-Elektronik/J1939Display/doku/simulator.jpg)]()
+[![J1939 Restbussimulation](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/simulator.jpg)](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/simulator.jpg)
 
 
 # Links
