@@ -105,10 +105,10 @@ else if ((err = (gint)CanExInitDriver("CanCallThread=0")) < 0)
   can_core->LastErrorString = g_strdup_printf("CanExInitDriver Error-Code:%d", err);
 else if ((err = (gint)CanExCreateDevice(&can_core->DeviceIndex, NULL)) < 0)
   can_core->LastErrorString = g_strdup_printf("CanExCreateDevice Error-Code:%d", err);
-else if ((err = CanExCreateFifo(0x80000001, 1000, NULL, 0, 0xFFFFFFFF)))
+else if ((err = CanExCreateFifo(INDEX_AUTOBAUD_FIFO, 1000, NULL, 0, 0xFFFFFFFF)))
   can_core->LastErrorString = g_strdup_printf("CanExCreateFifo Error-Code:%d", err);
 // Empfangs FIFO  erzeugen
-else if ((err = CanExCreateFifo(0x80000000, 10000, NULL, 0, 0xFFFFFFFF)))
+else if ((err = CanExCreateFifo(INDEX_TRACE_FIFO, 100000, NULL, 0, 0xFFFFFFFF)))
   can_core->LastErrorString = g_strdup_printf("CanExCreateFifo Error-Code:%d", err);
 // **** Filter konfigurieren
 else if ((err = FilterSetup()) < 0)
@@ -128,7 +128,7 @@ return(err);
 void J1939CanDown(struct TCanCore *can_core)
 {
 if (can_core->AppCanStatus >= APP_CAN_OPEN)
-  J1939Close(can_core);
+  J1939CanClose(can_core);
 J1939PnPStop(can_core);
 // **** Treiber entladen
 UnloadDriver();
@@ -143,14 +143,14 @@ if ((can_core->AppCanStatus == APP_CAN_INIT) || (can_core->AppCanStatus == APP_C
   return(-1);
 safe_free(can_core->LastErrorString);
 if (can_core->AppCanStatus >= APP_CAN_OPEN)
-  J1939Close(can_core);
+  J1939CanClose(can_core);
 // **** Schnittstelle PC <-> USB-Tiny öffnen
 if ((err = (gint)CanDeviceOpen(can_core->DeviceIndex, DEVICE_SNR)) < 0)
   can_core->LastErrorString = g_strdup_printf("CanDeviceOpen Error-Code:%d", err);
 else if ((err = (gint)CanExGetDeviceInfo(can_core->DeviceIndex, &can_core->DeviceInfo, NULL, NULL)) < 0)
   {
   can_core->LastErrorString = g_strdup_printf("CanExGetDeviceInfo Error-Code:%d", err);
-  J1939Close(can_core);
+  J1939CanClose(can_core);
   }
 if (err >= 0)
   {
@@ -167,7 +167,7 @@ return(err);
 }
 
 
-void J1939Close(struct TCanCore *can_core)
+void J1939CanClose(struct TCanCore *can_core)
 {
 if ((can_core->AppCanStatus == APP_CAN_INIT) || (can_core->AppCanStatus == APP_CAN_DRIVER_ERROR))
   return;
@@ -203,7 +203,7 @@ else
   return;
   }
 
-if (CanReceive(J1939_ID1_IDX, &msg, 1) > 0) // id = 0x18FEEE00
+if (CanReceive(J1939_ID1_IDX, &msg, 1) > 0) // id = 0x18FEEE00 
   {
   if (msg.MsgLen >= 4)
     {

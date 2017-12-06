@@ -37,6 +37,8 @@
 struct TMainWin
   {
   GtkWidget *Main;
+  GtkWidget *StatusBar;
+  GtkWidget *PageNameLabel;
   GtkWidget *EventBox;
   GtkWidget *Notebook;
   GtkWidget *StartWin;
@@ -53,6 +55,13 @@ static guint64 AppStatusTimeStamp;
 static gint AppStatus = APP_INIT;
 
 struct TCanCore CanCore;
+
+static const gchar *PageDescription[] = {
+  "S T A R T ...",
+  "J1939 Standert Werte anzeigen",
+  "J1939 Digital Standert Werte anzeigen",
+  "J1939 Analog Standert Werte anzeigen",
+  "Anzeige der CAN Rohdaten"};
 
 static void MenuCB(GtkButton *button, gpointer user_data);
 
@@ -89,6 +98,19 @@ gtk_widget_set_style(GTK_WIDGET(window), GTK_STYLE(style));
 }
 
 
+static void GuiSetPage(guint index)  
+{
+if (index == MENU_PAGE_INDEX)
+  gtk_widget_hide(MainWin.StatusBar);
+else
+  { 
+  gtk_widget_show(MainWin.StatusBar);
+  gtk_label_set_text(GTK_LABEL(MainWin.PageNameLabel), PageDescription[index]);
+  } 
+gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), index);
+}
+
+
 static void SetupFullscreen(void)
 {
 if (Setup.ShowFullscreen)
@@ -118,15 +140,15 @@ GtkWidget *widget, *box, *btn_bar, *image;
 box = gtk_vbox_new(FALSE, 10);
 gtk_container_set_border_width(GTK_CONTAINER(box), 5);
 
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht</span>", "J1939 Standert Werte anzeigen");
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 1</span>", "J1939 Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)1);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht</span>", "J1939 Digital Standert Werte anzeigen");
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 2</span>", "J1939 Digital Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)2);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
-widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 2</span>", "J1939 Analog Standert Werte anzeigen");
+widget = create_menue_button(NULL, "<span weight=\"bold\" size=\"x-large\">Übersicht 3</span>", "J1939 Analog Standert Werte anzeigen");
 g_signal_connect((gpointer)widget, "clicked", G_CALLBACK(MenuCB), (gpointer)3);
 gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
 
@@ -162,7 +184,7 @@ TimeNow = g_get_monotonic_time();
 if ((page) && (CanCore.AppCanStatus < APP_CAN_RUN))
   {
   AppStatus = APP_INIT;
-  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), 0);
+  GuiSetPage(0);
   }
 if (!page)
   {
@@ -182,9 +204,9 @@ if (!page)
                      else
                        {
                        if ((TimeNow - AppStatusTimeStamp) >= (3000 * 1000))
-                         {
+                         {                         
                          StartWinStop(MainWin.StartWin);
-                         gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), 1);
+                         GuiSetPage(1);
                          AppStatus = APP_RUN;
                          break;
                          }
@@ -228,21 +250,21 @@ guint index;
 index = (uintptr_t)user_data;
 if (index == 1000)
   gtk_main_quit();
-gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), index);
+GuiSetPage(index);
 }
 
 
 static void ShowMenuClickedCB(GtkButton *button, gpointer user_data)
 {
 if (AppStatus >= APP_RUN)
-  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
+  GuiSetPage(MENU_PAGE_INDEX);
 }
 
 
 static gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
 if (AppStatus >= APP_RUN)
-  gtk_notebook_set_current_page(GTK_NOTEBOOK(MainWin.Notebook), MENU_PAGE_INDEX);
+  GuiSetPage(MENU_PAGE_INDEX);
 return(FALSE);
 }
 
@@ -277,8 +299,8 @@ MainWin.Main = win;
 //gtk_container_set_border_width (GTK_CONTAINER (win), 8);
 gtk_window_set_title(GTK_WINDOW (win), "Open J1939");
 gtk_window_set_position(GTK_WINDOW (win), GTK_WIN_POS_CENTER);
-//gtk_window_set_default_size(GTK_WINDOW(win), 800, 480);
-gtk_window_set_default_size(GTK_WINDOW(win), 1606, 966);
+gtk_window_set_default_size(GTK_WINDOW(win), 800, 480);
+//gtk_window_set_default_size(GTK_WINDOW(win), 1606, 966);
 
 win = gtk_event_box_new();
 gtk_container_add(GTK_CONTAINER(MainWin.Main), win);
@@ -293,12 +315,13 @@ gtk_widget_realize(win);
 if (J1939CanInit(&CanCore) >= 0)
    EventTimerId = g_timeout_add(300, (GtkFunction)EventTimerProc, NULL);
 
-vbox = gtk_vbox_new(FALSE, 6);
+vbox = gtk_vbox_new(FALSE, 0);
 gtk_container_add(GTK_CONTAINER (win), vbox);
 
 notebook = gtk_notebook_new();
 MainWin.Notebook = notebook;
 gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
+gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 
 // 1. Seite -> Start
 widget = CreateStartWin(&CanCore);
@@ -325,8 +348,9 @@ gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 hbox = gtk_hbox_new(FALSE, 5);
 
-widget = gtk_label_new("J1939Main");
-gtk_box_pack_start(GTK_BOX(hbox), widget, TRUE, TRUE, 0);
+MainWin.StatusBar = hbox;
+MainWin.PageNameLabel = gtk_label_new(PageDescription[0]);
+gtk_box_pack_start(GTK_BOX(hbox), MainWin.PageNameLabel, TRUE, TRUE, 0);
 
 widget = gtk_button_new();
 gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NONE);

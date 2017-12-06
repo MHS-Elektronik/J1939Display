@@ -23,8 +23,6 @@
 #include "mhs_msg_types.h"
 #include "can_autobaud.h"
 
-#define INDEX_AUTOBAUD_FIFO 0x80000001
-
 
 struct TCanSpeedsTab
   {
@@ -40,15 +38,15 @@ struct TCanSpeedsTab
 #define UsedCanSpeedsTabSize 9
 // Tabelle mit CAN Übertragungsgeschwindigkeiten
 static const struct TCanSpeedsTab UsedCanSpeedsTab[UsedCanSpeedsTabSize] = {
-    {CAN_10K_BIT,  "10 kBit/s"},   // 10 kBit/s
-    {CAN_20K_BIT,  "20 kBit/s"},   // 20 kBit/s
-    {CAN_50K_BIT,  "50 kBit/s"},   // 50 kBit/s
+    {CAN_10K_BIT,  "10 kBit/s"},    // 10 kBit/s
+    {CAN_20K_BIT,  "20 kBit/s"},    // 20 kBit/s
+    {CAN_50K_BIT,  "50 kBit/s"},    // 50 kBit/s
     {CAN_100K_BIT, "100 kBit/s"},   // 100 kBit/s
     {CAN_125K_BIT, "125 kBit/s"},   // 125 kBit/s
     {CAN_250K_BIT, "250 kBit/s"},   // 250 kBit/s
     {CAN_500K_BIT, "500 kBit/s"},   // 500 kBit/s
     {CAN_800K_BIT, "800 kBit/s"},   // 800 kBit/s
-    {CAN_1M_BIT,   "1 MBit/s"}}; // 1 MBit/s
+    {CAN_1M_BIT,   "1 MBit/s"}};    // 1 MBit/s
 
 
 #define RX_EVENT     0x00000001

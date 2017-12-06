@@ -21,6 +21,9 @@
 
 #define CAN_CMD_CLEAR_NO_SW_FILTER_CHANGE  (CAN_CMD_FIFOS_CLEAR | CAN_CMD_HW_FILTER_CLEAR | CAN_CMD_TXD_PUFFERS_CLEAR) 
 
+#define INDEX_TRACE_FIFO    0x80000000
+#define INDEX_AUTOBAUD_FIFO 0x80000001
+
 struct TCanCore
   {
   gchar *DriverFileName;
@@ -60,7 +63,7 @@ struct TJ1939Data
 gint J1939CanInit(struct TCanCore *can_core);
 void J1939CanDown(struct TCanCore *can_core);
 gint J1939CanOpen(struct TCanCore *can_core);
-void J1939Close(struct TCanCore *can_core);
+void J1939CanClose(struct TCanCore *can_core);
 void J1939CanReadMessages(struct TCanCore *can_core, struct TJ1939Data *d);
 
 void J1939PnPStop(struct TCanCore *can_core);

@@ -24,7 +24,7 @@
 #include "main.h"
 #include "xml_database.h"
 
-static const guint XMLFilesRefreshTime = 4000;  // 4. Sek 
+static const guint XMLFilesRefreshTime = 5000;  // 5 Sek. 
 
 static const gchar DashboardXMLFilename[] = {"dashboard.xml"};
 static const gchar StatusXMLFilename[] = {"status.xml"};

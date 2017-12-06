@@ -54,11 +54,11 @@ gtk_widget_modify_bg(GTK_WIDGET(widget), GTK_STATE_NORMAL, &DefFgColor);
 g_object_set_data(G_OBJECT(widget), "msg_widget", msg_widget);
 g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(MsgWidgetDestroy), msg_widget);
 
-vbox = gtk_vbox_new(FALSE, 10);
+vbox = gtk_vbox_new(FALSE, 5);
 gtk_container_set_border_width(GTK_CONTAINER(vbox), 5);
 gtk_container_add (GTK_CONTAINER(widget), vbox);
 
-box = gtk_hbox_new(FALSE, 10);
+box = gtk_hbox_new(FALSE, 5);
 gtk_box_pack_start(GTK_BOX(vbox), box, FALSE, FALSE, 0);
 msg_widget->VBox = vbox;
 // **** Icon
