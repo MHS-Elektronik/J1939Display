@@ -199,7 +199,7 @@ Java und HTML5 erwecken das Webfrontend zum Leben, die Funktion "init" aus "inde
 2. "Tab-Header" markieren
 3. Setzt abhängig von der selektierten Seite einen Intervall-Timer, der alle 500ms die Funktion "loadData" aufruft.
 
-[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)]((https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)
+[![J1939Display Webpage](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)](https://github.com/MHS-Elektronik/J1939Display/blob/master/doku/webpage.jpg)
 
 ## XML-Datenbank
 Alle 5 Sekunden schreibt das Programm die Dateien "status.xml" und "dashboard.xml", welche den aktuellen Ist-Zustand aller Messwerte widerspiegelen. Ein "Java Script" der Webpage liest diese Dateien alle 10 Sekunden ein und visualisiert die Messwerte in HTML und mit HTML5 Widgets.
